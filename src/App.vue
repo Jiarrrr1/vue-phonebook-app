@@ -1,75 +1,108 @@
+<style>
+ul>li {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  background-color: #6366F1;
+
+}
+
+li>p {
+  min-width: 36rem;
+  padding: .5rem;
+  color: aliceblue;
+  font-weight: 400;
+  letter-spacing: .1rem;
+}
+
+li>button {
+  padding: .8rem;
+  margin-left: 1rem;
+  background-color: rgb(131, 131, 131);
+  color: rgb(211, 211, 211);
+  font-weight: 600;
+  border-radius: .75rem;
+}
+
+li>input {
+  transform: scale(1.5);
+  border-radius: .75rem;
+  outline: none;
+  border: none;
+}
+
+li>input:checked {
+  background-color: green;
+}
+</style>
 <template>
-  <div class="text-center pt-48">
-    <p>Hi I am {{ name + ' ' + 'My age is ' + age }} </p>
-    <!-- Dynamic Classes in Vue 3 -->
-    <button :class="[disableAdd, maxAge, minAge]" :disabled="limitAge" @click="addAge"
-      class="bg-blue-800 p-3 text-gray-50">Add
-      Age</button>
-    <button :class="[disableMinus, maxAge, minAge]" :disabled="age <= 0" class="bg-red-600 p-3 mx-3 text-gray-50"
-      @click="minusAge">Minus
-      Age</button>
-    <!-- <img :src="imgUrl" alt=""> -->
+  <div class="w-1/2 mx-auto my-20  bg-indigo-700 rounded-xl overflow-hidden">
+    <header class="text-center p-10 text-2xl font-bold tracking-widest bg-indigo-500 text-slate-100">TODO Vue 3</header>
+    <header class="text-left pl-6 p-.5 pt-5 text-lg tracking-widest font-semibold text-slate-100">Your Tasks:</header>
+    <div class="p-5">
+      <section>
+        <ul v-if="checkTask" class="flex flex-col min-h-96 h-96 max-h-96 overflow-auto gap-2">
+          <li v-for="task in taskList" :key="task.id" class="rounded-xl min-h-24 px-8">
+            <input type="checkbox" v-model="task.isCompleted" @change="showStatus">
+            <p>{{ task.name }}</p>
+            <button :class="[task.isCompleted ? 'bg-red-600' : 'hidden']" @click="deleteTask(task.id)">Delete</button>
+          </li>
+        </ul>
+
+        <div v-else>
+          <p class="text-center text-red-500 font-bold uppercase text-xl tracking-widest">List of Tasks is Empty</p>
+        </div>
+        <div class="p-3 px-1 font-semibold text-slate-100">
+          <p>{{ `Number of Tasks: ${taskList.length}` }}</p>
+        </div>
+
+        <div class="py-4 flex gap-10 justify-between">
+          <input v-model="taskInput" type="text" class="w-4/5 p-2 rounded-xl outline-none">
+          <button @click="createTask" class="px-6 bg-green-600 text-gray-100 font-semibold rounded-xl mr-12">Add</button>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
 
+
 <!-- Composition Api Format -->
 <script setup>
-import { computed, ref } from 'vue';
+import { ref, computed } from 'vue';
 
-// Text Interpolation
-const name = ref('John Lerry Taruc');
-const age = ref(5)
-const imgUrl = ref('https://resizing.flixster.com/wouDuoTzmfpwzvVDiTldrBHkbTo=/206x305/v2/https://resizing.flixster.com/8PNiwC2bpe9OecfYZSOVkvYC5vk=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2U5NGM0Y2Q1LTAyYTItNGFjNC1hNWZhLWMzYjJjOTdjMTFhOS5qcGc=')
+const taskInput = ref('');
+const taskList = ref([]);
 
-const addAge = () => {
-  age.value += 10;
-}
+const checkTask = computed(() => {
+  return taskList.value.length > 0;
+});
 
-const minusAge = () => {
-  age.value = age.value - 10;
-}
+const showStatus = () => {
+  taskList.value.forEach(task => {
+    console.log(`Task: ${task.name}, Completed: ${task.isCompleted}, Id: ${task.id}`);
+  });
+};
 
-const maxAge = computed(() => {
-  if (age.value > 50) {
- return   age.value = 50;
-  }
-})
+const createTask = () => {
+  const taskData = {
+    id: Math.floor(Math.random() * 1000000),
+    name: taskInput.value,
+    isCompleted: false
+  };
+  taskList.value.push(taskData);
+  taskInput.value = '';
+  showStatus();
+};
 
-const minAge = computed(() => {
-  if (age.value < 0) {
- return age.value = 0;
-  }
-})
-
-
-const limitAge = computed(() => {
-  return age.value >= 50
-})
-
-const disableAdd = computed(() => {
-  if (age.value >= 50) {
-    return 'bg-gray-300'
-    age.value = 50
-  }
-  return ''
-})
-const disableMinus = computed(() => {
-  if (age.value <= 0) {
-    return 'bg-gray-300'
-  }
-  return ''
-})
-
-
-
-
-
-console.log(limitAge.value);
-
-
-
+const deleteTask = (taskId) => {
+  taskList.value = taskList.value.filter(task => task.id !== taskId);
+  showStatus();
+};
 </script>
+
+
 
 <!-- Options API Format -->
 <!-- <script>
