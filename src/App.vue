@@ -1,41 +1,3 @@
-<style>
-ul>li {
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 1.3rem;
-  background-color: #6366F1;
-
-}
-
-li>p {
-  min-width: 36rem;
-  padding: .5rem;
-  color: aliceblue;
-  font-weight: 400;
-  letter-spacing: .1rem;
-}
-
-li>button {
-  padding: .8rem;
-  margin-left: 1rem;
-  background-color: rgb(131, 131, 131);
-  color: rgb(211, 211, 211);
-  font-weight: 600;
-  border-radius: .75rem;
-}
-
-li>input {
-  transform: scale(1.5);
-  border-radius: .75rem;
-  outline: none;
-  border: none;
-}
-
-li>input:checked {
-  background-color: green;
-}
-</style>
 <template>
   <div class="w-1/2 mx-auto my-20  bg-indigo-700 rounded-xl overflow-hidden">
     <header class="text-center p-10 text-2xl font-bold tracking-widest bg-indigo-500 text-slate-100">TODO Vue 3</header>
@@ -43,10 +5,10 @@ li>input:checked {
     <div class="p-5">
       <section>
         <ul v-if="checkTask" class="flex flex-col min-h-96 h-96 max-h-96 overflow-auto gap-2">
-          <li v-for="task in taskList" :key="task.id" class="rounded-xl min-h-24 px-8">
-            <input type="checkbox" v-model="task.isCompleted" @change="showStatus">
-            <p>{{ task.name }}</p>
-            <button :class="[task.isCompleted ? 'bg-red-600' : 'hidden']" @click="deleteTask(task.id)">Delete</button>
+          <li v-for="task in taskList" :key="task.id" class=" p-4 flex items-center gap-4 bg-indigo-500 rounded-xl min-h-24 px-8">
+            <input class="accent-green-600 rounded-xl outline-none border-none scale-150" type="checkbox" v-model="task.isCompleted" @change="showStatus">
+            <p class="tracking-widest text-slate-100 p-2 w-4/5">{{ task.name }}</p>
+            <button :class="[task.isCompleted ? 'bg-red-600' : 'hidden']" @click="deleteTask(task.id)" class=" p-3.5 ml-4 rounded-xl font-semibold text-gray-100 ">Delete</button>
           </li>
         </ul>
 
@@ -59,18 +21,20 @@ li>input:checked {
 
         <div class="py-4 flex gap-10 justify-between">
           <input v-model="taskInput" type="text" class="w-4/5 p-2 rounded-xl outline-none">
-          <button @click="createTask" class="px-6 bg-green-600 text-gray-100 font-semibold rounded-xl mr-12">Add</button>
+          <button @click="createTask" class="p-3.5 px-6 text-center bg-green-600 text-gray-100 font-semibold rounded-xl mr-12">Add</button>
         </div>
       </section>
     </div>
   </div>
 </template>
 
-
+<!-- Guides -->
+<!-- v-for - only use for array -->
+ <!-- props only for child component -->
 
 <!-- Composition Api Format -->
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, reactive } from 'vue';
 
 const taskInput = ref('');
 const taskList = ref([]);
@@ -82,7 +46,7 @@ const checkTask = computed(() => {
 const showStatus = () => {
   taskList.value.forEach(task => {
     console.log(`Task: ${task.name}, Completed: ${task.isCompleted}, Id: ${task.id}`);
-  });
+  });  
 };
 
 const createTask = () => {
@@ -100,6 +64,9 @@ const deleteTask = (taskId) => {
   taskList.value = taskList.value.filter(task => task.id !== taskId);
   showStatus();
 };
+
+
+
 </script>
 
 
